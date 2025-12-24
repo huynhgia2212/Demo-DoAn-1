@@ -1,0 +1,52 @@
+name: Demo Windows CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # --- VIỆC 1: KIỂM TRA CODE ---
+  build-and-test:
+    runs-on: windows-latest  # Chạy trên máy chủ Windows
+
+    steps:
+      - name: Lấy code về
+        uses: actions/checkout@v3
+
+      - name: Cài đặt Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Cài đặt thư viện
+        run: npm install  
+
+      - name: Chạy Test
+        run: npm test
+
+      - name: Chạy Build
+        run: npm run build
+
+      - name: Upload kết quả
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: '.'
+
+  # --- VIỆC 2: ĐƯA LÊN WEB ---
+  deploy:
+    needs: build-and-test
+    runs-on: windows-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Deploy lên GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
