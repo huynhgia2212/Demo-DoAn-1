@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
   "build": "echo 'Dang Build web tren Windows...' && exit 0",
-  "test": "echo 'Dang Test web...' && exit 0"
+  "test": "echo 'Dang Test web...' && exit 1"
 },
   "keywords": [],
   "author": "",
